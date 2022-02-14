@@ -24,13 +24,11 @@ public class UrlShortenerController {
 
     @Async
     @GetMapping("{id}")
-    public Future<ResponseEntity<Void>> redirect(@PathVariable String id, HttpServletResponse httpServletResponse) {
+    public Future<ResponseEntity<Void>> redirect(@PathVariable String id) {
         return this.urlShortenerService.getUrlData(id)
                 .handle((urlData, throwable) -> {
                     if (urlData == null) return ResponseEntity.notFound().build();
 
-                    httpServletResponse.setHeader("Location", urlData.getUrl());
-                    httpServletResponse.setStatus(302);
                     return ResponseEntity.status(HttpStatus.FOUND)
                             .location(URI.create(urlData.getUrl()))
                             .build();
