@@ -7,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.UUID;
 import java.util.concurrent.Future;
@@ -26,7 +23,7 @@ public class UrlShortenerController {
     @GetMapping("{id}")
     public Future<ResponseEntity<Void>> redirect(@PathVariable String id) {
         return this.urlShortenerService.getUrlData(id)
-                .handle((urlData, throwable) -> {
+                .handleAsync((urlData, throwable) -> {
                     if (urlData == null) return ResponseEntity.notFound().build();
 
                     return ResponseEntity.status(HttpStatus.FOUND)
@@ -37,13 +34,19 @@ public class UrlShortenerController {
 
     @Async
     @PostMapping("create/")
-    public Future<UrlData> create(@RequestParam String url, @RequestHeader("API-KEY") UUID apiKey) {
+    public Future<UrlData> create(@RequestParam String url, @RequestHeader("API-KEY") String apiKey) {
         return this.urlShortenerService.create(url, apiKey);
     }
 
     @Async
+    @PostMapping("createWithId/")
+    public Future<UrlData> create(@RequestParam String id, @RequestParam String url, @RequestHeader("API-KEY") String apiKey) {
+        return this.urlShortenerService.create(id, url, apiKey);
+    }
+
+    @Async
     @DeleteMapping("delete/")
-    public void delete(@RequestParam String id, @RequestHeader("API-KEY") UUID apiKey) {
+    public void delete(@RequestParam String id, @RequestHeader("API-KEY") String apiKey) {
         this.urlShortenerService.delete(id, apiKey);
     }
 

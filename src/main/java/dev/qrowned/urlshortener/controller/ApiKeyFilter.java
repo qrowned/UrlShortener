@@ -12,14 +12,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.UUID;
-import java.util.regex.Pattern;
 
 @Component
 @RequiredArgsConstructor
 public final class ApiKeyFilter extends GenericFilterBean {
-
-    private static final Pattern UUID_REGEX = Pattern.compile("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$");
 
     private final UrlShortenerConfig urlShortenerConfig;
 
@@ -31,11 +27,10 @@ public final class ApiKeyFilter extends GenericFilterBean {
         String header = httpServletRequest.getHeader("API-KEY");
 
         if (((HttpServletRequest) servletRequest).getMethod().equals("GET")
-                || (header != null && UUID_REGEX.matcher(header).matches() && this.urlShortenerConfig.getApiKeys().contains(UUID.fromString(header))))
+                || (this.urlShortenerConfig.getApiKeys().contains(header)))
             filterChain.doFilter(servletRequest, servletResponse);
         else
             httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Please provide a valid API-KEY included in the header of your request!");
-
     }
 
 }
