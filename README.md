@@ -1,7 +1,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/qrowned/UrlShortener">
-    <img src="https://luca.rip/OgCupG2nYv" alt="Logo" width="117" height="121">
+    <img src="https://luca.rip/i4jyHG4dAe" alt="Logo" width="117" height="121">
   </a>
 
 <h3 align="center">UrlShortener</h3>
