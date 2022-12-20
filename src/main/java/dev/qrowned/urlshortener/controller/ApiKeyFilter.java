@@ -1,16 +1,16 @@
 package dev.qrowned.urlshortener.controller;
 
 import dev.qrowned.urlshortener.UrlShortenerConfig;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
@@ -26,8 +26,7 @@ public final class ApiKeyFilter extends GenericFilterBean {
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         String header = httpServletRequest.getHeader("API-KEY");
 
-        if (((HttpServletRequest) servletRequest).getMethod().equals("GET")
-                || (this.urlShortenerConfig.getApiKeys().contains(header)))
+        if (((HttpServletRequest) servletRequest).getMethod().equals("GET") || (this.urlShortenerConfig.getApiKeys().contains(header)))
             filterChain.doFilter(servletRequest, servletResponse);
         else
             httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Please provide a valid API-KEY included in the header of your request!");

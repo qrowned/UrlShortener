@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.scheduling.annotation.Async;
 
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public interface UrlDataRepository extends MongoRepository<UrlData, String> {

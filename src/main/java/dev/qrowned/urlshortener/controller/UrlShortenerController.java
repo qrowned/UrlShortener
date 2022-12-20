@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.UUID;
 import java.util.concurrent.Future;
 
 @RestController
@@ -20,7 +19,7 @@ public class UrlShortenerController {
     private final UrlShortenerService urlShortenerService;
 
     @Async
-    @GetMapping("{id}")
+    @GetMapping("{id}/**") // using "/**" to allow access with slash and without slash
     public Future<ResponseEntity<Void>> redirect(@PathVariable String id) {
         return this.urlShortenerService.getUrlData(id)
                 .handleAsync((urlData, throwable) -> {
