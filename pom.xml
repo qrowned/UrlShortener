@@ -13,6 +13,17 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>packagecloud-qrowned</id>
+            <url>packagecloud+https://packagecloud.io/qrowned/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>packagecloud-qrowned</id>
+            <url>packagecloud+https://packagecloud.io/qrowned/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
