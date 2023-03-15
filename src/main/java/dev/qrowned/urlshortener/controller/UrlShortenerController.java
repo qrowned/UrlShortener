@@ -2,6 +2,7 @@ package dev.qrowned.urlshortener.controller;
 
 import dev.qrowned.urlshortener.data.UrlData;
 import dev.qrowned.urlshortener.services.UrlShortenerService;
+import io.sentry.spring.jakarta.tracing.SentrySpan;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class UrlShortenerController {
     private final UrlShortenerService urlShortenerService;
 
     @Async
+    @SentrySpan
     @GetMapping("{id}/**") // using "/**" to allow access with slash and without slash
     public Future<ResponseEntity<Void>> redirect(@PathVariable String id) {
         return this.urlShortenerService.getUrlData(id)
