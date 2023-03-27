@@ -1,6 +1,7 @@
 package dev.qrowned.urlshortener.controller;
 
 import dev.qrowned.urlshortener.data.UrlData;
+import dev.qrowned.urlshortener.influx.publisher.RequestsPublisher;
 import dev.qrowned.urlshortener.services.UrlShortenerService;
 import io.sentry.spring.jakarta.tracing.SentrySpan;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,15 @@ import java.util.concurrent.Future;
 @RequiredArgsConstructor
 public class UrlShortenerController {
 
+    private final RequestsPublisher requestsPublisher;
     private final UrlShortenerService urlShortenerService;
 
     @Async
     @SentrySpan
     @GetMapping("{id}/**") // using "/**" to allow access with slash and without slash
     public Future<ResponseEntity<Void>> redirect(@PathVariable String id) {
+        this.requestsPublisher.increaseGet();
+
         return this.urlShortenerService.getUrlData(id)
                 .handleAsync((urlData, throwable) -> {
                     if (urlData == null) return ResponseEntity.notFound().build();
@@ -36,12 +40,14 @@ public class UrlShortenerController {
     @Async
     @PostMapping("create/")
     public Future<UrlData> create(@RequestParam String url, @RequestHeader("API-KEY") String apiKey) {
+        this.requestsPublisher.increaseCreate();
         return this.urlShortenerService.create(url, apiKey);
     }
 
     @Async
     @PostMapping("createWithId/")
     public Future<UrlData> create(@RequestParam String id, @RequestParam String url, @RequestHeader("API-KEY") String apiKey) {
+        this.requestsPublisher.increaseCreate();
         return this.urlShortenerService.create(id, url, apiKey);
     }
 
