@@ -5,12 +5,18 @@ import dev.qrowned.urlshortener.influx.publisher.RequestsPublisher;
 import dev.qrowned.urlshortener.services.UrlShortenerService;
 import io.sentry.spring.jakarta.tracing.SentrySpan;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriUtils;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Future;
 
 @RestController
@@ -39,16 +45,16 @@ public class UrlShortenerController {
 
     @Async
     @PostMapping("create/")
-    public Future<UrlData> create(@RequestParam String url, @RequestHeader("API-KEY") String apiKey) {
+    public Future<UrlData> create(@RequestParam URI url, @RequestHeader("API-KEY") String apiKey) throws MalformedURLException {
         this.requestsPublisher.increaseCreate();
-        return this.urlShortenerService.create(url, apiKey);
+        return this.urlShortenerService.create(url.toURL().toString(), apiKey);
     }
 
     @Async
     @PostMapping("createWithId/")
-    public Future<UrlData> create(@RequestParam String id, @RequestParam String url, @RequestHeader("API-KEY") String apiKey) {
+    public Future<UrlData> create(@RequestParam String id, @RequestParam URI url, @RequestHeader("API-KEY") String apiKey) throws MalformedURLException {
         this.requestsPublisher.increaseCreate();
-        return this.urlShortenerService.create(id, url, apiKey);
+        return this.urlShortenerService.create(id, url.toURL().toString(), apiKey);
     }
 
     @Async
